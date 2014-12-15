@@ -1,43 +1,36 @@
 <?php
 
-use Symfony\Component\Validator\Constraints\MinLength;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Nette\Forms\Form;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 require __DIR__ . '/../src/setup.php';
 
-// Create our first form!
-$form = $formFactory->createBuilder()
-    ->add('firstName', 'text', array(
-        'constraints' => array(
-            new NotBlank(),
-            new MinLength(4),
-        ),
-    ))
-    ->add('lastName', 'text', array(
-        'constraints' => array(
-            new NotBlank(),
-            new MinLength(4),
-        ),
-    ))
-    ->add('gender', 'choice', array(
-        'choices' => array('m' => 'Male', 'f' => 'Female'),
-    ))
-    ->add('newsletter', 'checkbox', array(
-        'required' => false,
-    ))
-    ->getForm();
+$form = new Form;
 
-if (isset($_POST[$form->getName()])) {
-    $form->bind($_POST[$form->getName()]);
+$firstName = $form->addText('firstName', 'Firstname');
+$firstName->setRequired();
+$firstName->addRule(Form::MIN_LENGTH, null, 4);
 
-    if ($form->isValid()) {
-        var_dump('VALID', $form->getData());
-        die;
-    }
+$lastName = $form->addText('lastName', 'Lastname');
+$lastName->setRequired();
+$lastName->addRule(Form::MIN_LENGTH, null, 4);
+
+$gender = $form->addSelect('gender', 'Gender', [
+    'm' => 'Male',
+    'f' => 'Female',
+]);
+$gender->setRequired();
+
+$form->addCheckbox('newsletter', 'Newsletter');
+
+$form->addSubmit('send');
+
+if ($form->isSubmitted() && $form->isValid()) {
+    var_dump('VALID', $form->getValues(true));
+    die;
 }
 
 echo $twig->render('index.html.twig', array(
-    'form' => $form->createView(),
+    'form' => $form,
 ));

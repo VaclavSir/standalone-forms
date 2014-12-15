@@ -4,6 +4,7 @@
         "symfony/validator": "2.1.*",
         "symfony/config": "2.1.*",
         "symfony/translation": "2.1.*",
-        "symfony/twig-bridge": "2.1.*"
+        "symfony/twig-bridge": "2.1.*",
+        "nette/forms": "~2.2"
     }
 }
